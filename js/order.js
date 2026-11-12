@@ -1,0 +1,32 @@
+'use strict';
+function renderCart(){cartValid();const box=$('#cart-items');box.replaceChildren();let count=0;for(const [id,rawQty] of Object.entries(state.cart)){const p=findProduct(id);if(!p)continue;const qty=Number(rawQty)||0;count+=qty;const row=el('div','cart-item'),img=el('img');img.src=productImageUrl(p);img.alt='Foto de '+p.name;const info=el('div','cart-detail');info.append(el('b','',p.name),el('small','',money(Number(p.price)||0)+' c/u · Demo'));const controls=quantityControls(id,qty,changeQty,id=>{removeCartProduct(id);refreshCart(renderCart);});row.append(img,info,controls);box.append(row);}if(!count)box.append(el('p','empty-cart','Tu carrito está vacío. Elige un producto en el catálogo.'));const subtotal=getCartSubtotal();$('#cart-count').textContent=count;$('#cart-subtotal').textContent=money(subtotal);const cost=currentShipping();$('#shipping-cost').textContent=cost===null? ($('#checkout-form').elements.delivery.value==='pickup'?'No aplica':'Por confirmar'):money(cost);$('#cart-total').textContent=cost===null?'Por confirmar':money(subtotal+cost);$('#place-order').disabled=count===0;const go=$('#continue-checkout');if(go)go.setAttribute('aria-disabled',String(count===0));return subtotal;}
+function changeQty(id,delta){adjustCart(id,delta);refreshCart(renderCart);}
+function currentShipping(){const checkout=$('#checkout-form');if(checkout.elements.delivery.value!=='delivery')return 0;return deliveryPrice($('#delivery-zone').value,getCartSubtotal());}
+function renderDelivery(){const checkout=$('#checkout-form'),delivery=checkout.elements.delivery.value==='delivery';$('#address-wrap').hidden=!delivery;$('#zone-wrap').hidden=!delivery;const select=$('#delivery-zone'),value=select.value;select.replaceChildren(new Option('Selecciona una zona',''));state.config.zones.filter(z=>z.active!==false).forEach(z=>select.add(new Option(z.name+' · '+money(z.price)+' demo',z.name)));if([...select.options].some(o=>o.value===value))select.value=value;const pickup=checkout.querySelector('[value=pickup]'),home=checkout.querySelector('[value=delivery]');pickup.disabled=!state.config.pickupEnabled;home.disabled=!state.config.deliveryEnabled;if(checkout.elements.delivery.value==='pickup'&&!state.config.pickupEnabled&&state.config.deliveryEnabled)home.checked=true;if(checkout.elements.delivery.value==='delivery'&&!state.config.deliveryEnabled&&state.config.pickupEnabled)pickup.checked=true;$('#address-wrap').hidden=checkout.elements.delivery.value!=='delivery';$('#zone-wrap').hidden=checkout.elements.delivery.value!=='delivery';const needsAddress=checkout.elements.delivery.value==='delivery';checkout.elements.address.required=needsAddress;select.required=needsAddress;home.parentElement.lastChild.textContent=state.config.zones.some(z=>z.active!==false)?' Domicilio (demostración)':' Domicilio (tarifa pendiente)';renderCart();}
+$('#clear-cart').addEventListener('click',async()=>{await clearCart();renderCart();});
+const checkout=$('#checkout-form');
+checkout.addEventListener('change',event=>{
+ if(!['delivery','zone'].includes(event.target.name))return;renderDelivery();
+ if(checkout.elements.delivery.value==='pickup')notify('Recogida en el establecimiento seleccionada · demo','info');
+ else if(!checkout.elements.zone.value)notify('Selecciona una zona de entrega. La tarifa se confirmará según la configuración.','warning');
+ else if(currentShipping()===null)notify('La tarifa del domicilio está pendiente de confirmación.','warning');
+ else notify('Zona seleccionada: '+checkout.elements.zone.value+' · domicilio '+money(currentShipping()),'info');
+});
+$('#continue-checkout').addEventListener('click',event=>{if(!countCart()){event.preventDefault();notify('Tu carrito está vacío. Agrega productos antes de continuar.','info');}});
+checkout.addEventListener('submit',event=>{
+ event.preventDefault();reloadDemo();cartValid();
+ const items=Object.entries(state.cart).map(([id,quantity])=>({id,name:findProduct(id)?.name,quantity:Number(quantity),unitPrice:Number(findProduct(id)?.price)||0})).filter(p=>p.name&&p.quantity>0);
+ if(!items.length){notify('Tu carrito está vacío. Agrega productos al carrito.','warning');renderCart();return;}
+ const data=new FormData(checkout),name=String(data.get('customer')||'').trim(),delivery=data.get('delivery'),address=String(data.get('address')||'').trim(),zone=String(data.get('zone')||'');
+ if(!name)return fieldError(checkout.elements.customer,'Escribe un nombre ficticio.');
+ if((delivery==='pickup'&&!state.config.pickupEnabled)||(delivery==='delivery'&&!state.config.deliveryEnabled)){renderDelivery();notify('Esta modalidad de entrega ya no está disponible. Revisa la selección.','warning');return;}
+ if(delivery==='delivery'&&!address)return fieldError(checkout.elements.address,'Escribe una dirección ficticia.');
+ if(delivery==='delivery'&&!zone)return fieldError(checkout.elements.zone,'Selecciona una zona de entrega.');
+ const subtotal=items.reduce((total,p)=>total+p.unitPrice*p.quantity,0),shipping=delivery==='delivery'?deliveryPrice(zone,subtotal):0;
+ if(shipping===null)return fieldError(checkout.elements.zone,'La tarifa del domicilio está pendiente. Selecciona una zona configurada.');
+ if(subtotal<Number(state.config.minOrder||0)){notify('El pedido mínimo de demostración es '+money(state.config.minOrder)+'.','warning');return;}
+ const next=Number(state.sequence||0)+1,id='DEMO-'+String(next).padStart(4,'0'),now=new Date().toISOString(),order={id,customer:name,contact:String(data.get('contact')||'').trim(),delivery,address,zone,reference:String(data.get('reference')||'').trim(),payment:data.get('payment'),paymentStatus:data.get('payment')==='cash'?'Pendiente de recaudo':'No procesado (simulación)',items,subtotal,shipping,total:subtotal+shipping,status:'Recibido',driver:'',createdAt:now,history:[{status:'Recibido',at:now}]};
+ if(!commitChange(()=>{state.sequence=next;state.orders.unshift(order);state.cart={};},'Pedido ficticio '+id+' guardado en este navegador. No se envió al negocio.','success')){renderCart();return;}
+ checkout.reset();renderDelivery();const result=$('#checkout-result');result.hidden=false;result.replaceChildren(el('strong','','Pedido '+id+' creado SOLO en esta demostración'),el('p','','Total ficticio '+money(order.total)+'. No se transmitió ni se cobró.'));
+});
+renderDelivery();window.addEventListener('storage',e=>{if(e.key===KEY){reloadDemo();renderDelivery();}});window.addEventListener('focus',()=>{reloadDemo();renderDelivery();});

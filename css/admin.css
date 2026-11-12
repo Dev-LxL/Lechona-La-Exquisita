@@ -1,0 +1,60 @@
+body.admin-page{background:#fff9f0}.admin-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:24px;padding-bottom:24px}.admin-identity{display:flex;align-items:center;gap:16px}.admin-identity img{width:72px;height:72px;object-fit:contain}.admin-identity div{display:flex;flex-direction:column;gap:4px}.admin-identity strong{font-size:clamp(1.2rem,3vw,1.9rem)}.admin-identity small{letter-spacing:.12em;font-size:.7rem;color:#8d3327}.admin-page .admin-section{padding-top:28px;min-height:65vh}.admin-foot{font-size:.8rem;opacity:.75;padding:35px 0}.admin-page .admin-header .button-outline{color:#681008;border-color:#681008}@media(max-width:640px){.admin-header{flex-wrap:wrap}.admin-identity img{width:58px;height:58px}.admin-page .admin-header .button{width:100%;justify-content:center}}
+/* V3.4: carga y previsualización de imágenes sin modificar la identidad aprobada */
+.product-dialog{position:absolute;inset:24px 0 auto;max-width:min(860px,calc(100% - 30px));max-height:none;margin:0 auto 24px;overflow:visible}
+.product-dialog form{grid-template-columns:minmax(0,1fr);align-items:start}
+.product-dialog form>*{min-width:0}
+.product-dialog textarea{resize:vertical}
+@media(min-width:760px){
+ .product-dialog form{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+ .product-dialog .dialog-top,.product-dialog .radio-label,.product-dialog .dialog-actions{grid-column:1/-1}
+ .product-dialog form>.upload-panel{grid-column:2;grid-row:2/5}
+}
+@media(max-width:450px){.product-dialog .form-cols{grid-template-columns:minmax(0,1fr)}}
+.upload-panel{border:1px dashed #c99579;border-radius:13px;padding:14px;background:#fff1df;display:grid;gap:9px}
+.upload-panel>label{font-size:.86rem;font-weight:900}
+.upload-panel input[type=file]{font-size:.82rem;background:#fff;border-radius:9px;padding:9px;max-width:100%}
+.upload-panel>small{color:#77534a;font-size:.75rem}
+.photo-preview{display:flex;align-items:center;gap:14px}
+.photo-preview img{width:102px;height:86px;flex-shrink:0;object-fit:cover;border-radius:10px;border:1px solid #e6bda5}
+.photo-preview>div{display:grid;gap:6px;min-width:0}
+.photo-preview strong{font-size:.82rem}
+.photo-preview p{margin:0;font-size:.75rem;color:#795953}
+.photo-preview button{width:max-content;max-width:100%}
+@media(max-width:450px){.photo-preview{align-items:start}.photo-preview img{width:75px;height:75px}.product-dialog{padding:17px}}
+
+/* V3.5: panel con formularios editables sin afectar la identidad */
+.admin-tabs{display:flex;flex-wrap:wrap;gap:6px}.settings-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:20px 0}.settings-form>label{display:flex;flex-direction:column;gap:6px;font-weight:700}.settings-form input:not([type=checkbox]),.settings-form textarea{width:100%;min-width:0;padding:12px;border:1px solid #d9aa91;border-radius:10px;background:white;font:inherit}.settings-form label:has(input[type=checkbox]){flex-direction:row;align-items:center}.settings-wide{grid-column:1/-1}.settings-form .admin-primary{max-width:320px}.settings-form img{object-fit:contain;max-width:150px;max-height:150px}.hours-admin-row{display:grid;grid-template-columns:120px 80px 1fr 1fr;gap:10px;align-items:center;margin-bottom:9px}.hours-admin-row input[type=time]{min-width:0;width:100%;padding:9px;border:1px solid #d9aa91;border-radius:9px}.gallery-admin-preview{display:flex;flex-wrap:wrap;gap:12px}.gallery-admin-preview img{width:150px;height:130px;object-fit:cover;border-radius:12px}@media(max-width:660px){.settings-form{grid-template-columns:1fr}.hours-admin-row{grid-template-columns:1fr 1fr}.admin-tabs button{font-size:.8rem}}
+
+/* V3.6: dashboard compacto; desplazamiento natural y modales conservados. */
+.admin-page .admin-header{padding-top:12px;padding-bottom:12px;gap:12px}
+.admin-identity img{width:48px;height:48px}
+.admin-identity strong{font-size:clamp(.95rem,2vw,1.25rem);letter-spacing:-.025em}
+.admin-identity small{font-size:.62rem}
+.admin-header .button{padding:10px 15px;font-size:.8rem}
+.admin-page .admin-section{padding:16px 0 28px}
+.admin-notice{padding:10px 14px;font-size:.76rem;margin-bottom:14px}
+.admin-page .stats-grid{gap:10px;margin-bottom:16px}
+.admin-page .stat{padding:12px 16px}
+.admin-page .stat small{font-size:.74rem;margin-bottom:4px}
+.admin-page .stat strong{font-size:1.65rem}
+.admin-page .admin-tabs{gap:4px}
+.admin-page .admin-tabs button{padding:10px 12px;font-size:.76rem}
+.admin-page .admin-panel{padding:20px;min-height:0}
+.admin-page .admin-panel-heading{margin-bottom:14px}
+.admin-page .admin-panel h3{font-size:1.45rem}
+.admin-page .admin-product-row{padding:10px;gap:12px}
+.admin-page .admin-product-row img{width:54px;height:54px}
+.admin-prod-desc{min-width:0;overflow-wrap:anywhere}
+.admin-page .admin-actions{margin-top:16px}
+.admin-foot{padding:16px 0;text-align:center}
+.admin-foot>p:first-child{font-size:.72rem;margin-bottom:8px}
+.admin-foot .lxl-credit{margin-top:8px;border-color:var(--line)}
+.social-settings{border:1px solid var(--line);border-radius:10px;display:flex;flex-wrap:wrap;gap:12px;padding:12px;font-size:.85rem}
+.social-settings label{display:flex;align-items:center;gap:5px}
+.gallery-admin-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px}
+.gallery-admin-card{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;min-width:0}
+.gallery-admin-card label{display:grid;gap:5px;font-size:.8rem}
+.gallery-admin-card input{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
+.gallery-admin-card img{width:100%;height:140px}
+.settings-form>*{min-width:0}
+@media(max-width:660px){.admin-page .admin-header .button{width:auto}.admin-page .admin-panel{padding:14px}.admin-page .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-page .stat{padding:10px}.admin-page .admin-tabs button{flex:1 1 125px}.admin-page .admin-product-row{display:grid;grid-template-columns:54px minmax(0,1fr)}.admin-page .admin-product-row .admin-row-actions{grid-column:1/-1;width:100%;justify-content:flex-end}.hours-admin-row{gap:8px}.admin-page .admin-panel-heading{gap:12px}}

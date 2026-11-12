@@ -1,0 +1,20 @@
+LA EXQUISITA — V3.4 · LXL — CODE × LIHEN
+
+Páginas independientes:
+index.html — tienda pública y catálogo + carrito lateral
+pedido/index.html — carrito completo y checkout ficticio
+admin/index.html — panel del negocio ficticio
+
+Para revisar datos compartidos, ejecutar servidor local desde la carpeta:
+python -m http.server 8000
+Abrir http://localhost:8000/ y http://localhost:8000/admin/
+
+Prueba: Agregar producto -> abre lateral -> cambiar cantidades -> Ver pedido completo -> crear pedido ficticio -> admin/index.html -> pedidos.
+Los datos solo viven en localStorage del mismo navegador/origen, no hay autenticación, backend, pedidos ni pagos reales. No ingresar datos personales reales.
+Productos y precios son ficticios, deben confirmarse.
+No modificar ni publicar el proyecto en producción sin autorización y pruebas.
+
+V3.4: panel administrador permite cargar fotografía JPG, PNG o WebP en Agregar/Editar producto.
+La imagen se convierte a JPEG reducido y se almacena en localStorage, exclusivamente en este dispositivo y navegador. La imagen aparece en el catálogo público del mismo origen al recargar/volver a la pestaña.
+Se puede conservar, reemplazar o quitar la foto personalizada y volver a imagen de referencia.
+LÍMITE: máximo 5 MB de archivo original; almacenamiento del navegador limitado, no sirve para producción, múltiples equipos o muchas imágenes. Requiere backend y almacenamiento seguro en la versión real.
